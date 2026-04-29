@@ -1,6 +1,6 @@
-# AgriVista Lab
+# Agrismart pro
 
-AgriVista Lab is an original, Streamlit-based agricultural analytics project inspired by multi-module farm intelligence apps like AgriSmart Pro.
+Agrismart pro is an original, Streamlit-based agricultural analytics project inspired by multi-module farm intelligence apps like AgriSmart Pro.
 
 ## Features
 
