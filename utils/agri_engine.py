@@ -123,3 +123,124 @@ def profit_estimate(crop: str, estimated_yield_t: float, area_hectare: float, ex
         "breakeven_tons": round(breakeven_tons, 2),
         "price_per_ton": profile.market_price_per_ton,
     }
+
+
+def blend_datasets(left_df, right_df, left_weight: float = 0.5, right_weight: float = 0.5):
+    common_cols = [column for column in left_df.columns if column in right_df.columns]
+    numeric_cols = [column for column in common_cols if np.issubdtype(left_df[column].dtype, np.number) and np.issubdtype(right_df[column].dtype, np.number)]
+
+    if not numeric_cols:
+        return left_df.copy(), {"columns": [], "rows": int(len(left_df))}
+
+    blend_rows = []
+    left_total = max(left_weight + right_weight, 1e-9)
+    left_factor = left_weight / left_total
+    right_factor = right_weight / left_total
+
+    for column in numeric_cols:
+        blended_series = (left_df[column].fillna(0).astype(float) * left_factor) + (right_df[column].fillna(0).astype(float) * right_factor)
+        blend_rows.append((column, round(float(blended_series.mean()), 3)))
+
+    summary = {
+        "columns": numeric_cols,
+        "rows": int(min(len(left_df), len(right_df))),
+        "blended_means": dict(blend_rows),
+    }
+
+    blended = left_df.copy()
+    for column in numeric_cols:
+        blended[column] = (left_df[column].fillna(0).astype(float) * left_factor) + (right_df[column].fillna(0).astype(float) * right_factor)
+
+    return blended, summary
+
+
+def disease_assessment(symptoms: Dict[str, float]) -> Dict[str, float | str | list]:
+    yellowing = float(symptoms.get("yellowing", 0))
+    spots = float(symptoms.get("spots", 0))
+    wilting = float(symptoms.get("wilting", 0))
+    holes = float(symptoms.get("holes", 0))
+    mold = float(symptoms.get("mold", 0))
+    crop = symptoms.get("crop", "Crop")
+
+    fungal_score = spots * 0.3 + mold * 0.35 + wilting * 0.15 + yellowing * 0.1
+    bacterial_score = wilting * 0.3 + yellowing * 0.25 + spots * 0.2 + mold * 0.15
+    insect_score = holes * 0.4 + yellowing * 0.15 + wilting * 0.1 + spots * 0.1
+    nutrient_score = yellowing * 0.45 + wilting * 0.2 + spots * 0.1
+
+    candidates = {
+        f"Fungal infection in {crop}": fungal_score,
+        f"Bacterial stress in {crop}": bacterial_score,
+        f"Insect damage in {crop}": insect_score,
+        f"Nutrient deficiency in {crop}": nutrient_score,
+    }
+    diagnosis = max(candidates, key=candidates.get)
+    confidence = round(float(np.clip(max(candidates.values()) * 10, 35, 99)), 1)
+
+    recommendations = []
+    if "Fungal" in diagnosis:
+        recommendations.append("Improve airflow and consider a recommended fungicide program.")
+    if "Bacterial" in diagnosis:
+        recommendations.append("Remove badly affected leaves and avoid overhead watering.")
+    if "Insect" in diagnosis:
+        recommendations.append("Inspect undersides of leaves and use pest control if thresholds are exceeded.")
+    if "Nutrient" in diagnosis:
+        recommendations.append("Review fertilizer balance and soil test values before corrective action.")
+
+    severity = round(float(np.clip(max(candidates.values()) / 10, 0, 10)), 1)
+    return {
+        "diagnosis": diagnosis,
+        "confidence": confidence,
+        "severity": severity,
+        "recommendations": recommendations,
+        "scores": {key: round(float(value), 2) for key, value in candidates.items()},
+    }
+
+
+def soil_health_score(soil: Dict[str, float]) -> Dict[str, float | str | list]:
+    ph = float(soil.get("ph", 7.0))
+    ec = float(soil.get("ec", 0.5))
+    organic_carbon = float(soil.get("organic_carbon", 0.6))
+    n = float(soil.get("n", 50.0))
+    p = float(soil.get("p", 25.0))
+    k = float(soil.get("k", 25.0))
+    moisture = float(soil.get("moisture", 50.0))
+
+    ph_score = 100 - min(abs(ph - 6.8) * 20, 60)
+    ec_score = 100 - min(max(ec - 1.0, 0) * 40, 50)
+    oc_score = min(organic_carbon * 100, 100)
+    npk_score = (min(n / 2, 100) + min(p * 2, 100) + min(k * 2, 100)) / 3
+    moisture_score = 100 - min(abs(moisture - 55) * 1.2, 50)
+
+    overall = round(float(np.clip((ph_score * 0.22) + (ec_score * 0.16) + (oc_score * 0.22) + (npk_score * 0.25) + (moisture_score * 0.15), 0, 100)), 1)
+    if overall >= 80:
+        status = "Healthy"
+    elif overall >= 60:
+        status = "Moderate"
+    else:
+        status = "Needs Improvement"
+
+    advice = []
+    if ph < 6.0:
+        advice.append("Soil is acidic. Consider lime-based correction.")
+    elif ph > 7.8:
+        advice.append("Soil is alkaline. Add organic matter and monitor micronutrients.")
+
+    if ec > 1.5:
+        advice.append("Electrical conductivity is elevated. Reduce salinity buildup and improve leaching.")
+    if organic_carbon < 0.5:
+        advice.append("Organic carbon is low. Add compost or farmyard manure.")
+    if n < 40 or p < 20 or k < 20:
+        advice.append("NPK values are below ideal range. Run fertilizer planning before sowing.")
+    if moisture < 35:
+        advice.append("Soil moisture is low. Improve irrigation timing and residue cover.")
+
+    return {
+        "overall_score": overall,
+        "status": status,
+        "ph_score": round(float(ph_score), 1),
+        "ec_score": round(float(ec_score), 1),
+        "organic_carbon_score": round(float(oc_score), 1),
+        "npk_score": round(float(npk_score), 1),
+        "moisture_score": round(float(moisture_score), 1),
+        "advice": advice,
+    }

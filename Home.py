@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import streamlit as st
 
-st.set_page_config(page_title="AgriVista Lab", layout="wide", page_icon=":seedling:")
+st.set_page_config(page_title="AgriSmart Pro", layout="wide", page_icon=":seedling:")
 
 st.markdown(
     """
@@ -53,9 +53,9 @@ st.markdown(
 st.markdown(
     """
     <div class="hero">
-        <h1 style="margin:0; font-size:3rem;">AgriVista Lab</h1>
+        <h1 style="margin:0; font-size:3rem;">AgriSmart Pro</h1>
         <p style="margin: 0.4rem 0 0 0; font-size:1.1rem; max-width: 850px;">
-            A practical farm analytics workspace inspired by AgriSmart-style workflows.
+            A practical farm analytics workspace inspired by AgriSmart Pro-style workflows.
             Predict crop suitability, estimate quality and yield, calculate fertilizer and irrigation plans,
             and track profit and historical trends.
         </p>
@@ -94,6 +94,41 @@ with c3:
         <div class="card">
             <h3>Profit + History</h3>
             <p>Estimate ROI, break-even yield, and review downloadable analytics history.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+d1, d2, d3 = st.columns(3)
+
+with d1:
+    st.markdown(
+        """
+        <div class="card">
+            <h3>Data Blender</h3>
+            <p>Combine two CSV files into one blended dataset for analysis and reporting.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+with d2:
+    st.markdown(
+        """
+        <div class="card">
+            <h3>Disease Detection</h3>
+            <p>Review uploaded leaf images and symptom scores to estimate likely crop disease.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+with d3:
+    st.markdown(
+        """
+        <div class="card">
+            <h3>Soil Health Analyser</h3>
+            <p>Check pH, EC, carbon, NPK, and moisture to get a soil health score and advice.</p>
         </div>
         """,
         unsafe_allow_html=True,

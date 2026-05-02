@@ -1,6 +1,6 @@
-# Agrismart pro
+# AgriSmart Pro
 
-Agrismart pro is an original, Streamlit-based agricultural analytics project inspired by multi-module farm intelligence apps like AgriSmart Pro.
+AgriSmart Pro is an original, Streamlit-based agricultural analytics project inspired by multi-module farm intelligence apps.
 
 ## Features
 
@@ -10,6 +10,9 @@ Agrismart pro is an original, Streamlit-based agricultural analytics project ins
 - Irrigation planner with rainfall credit
 - Profit and ROI analyzer
 - History tracking and CSV export
+- Data Blender module for combining CSV datasets
+- Disease Detection module for symptom-based demo diagnosis
+- Soil Health Analyser for soil quality scoring
 
 ## Tech Stack
 
@@ -22,7 +25,7 @@ Agrismart pro is an original, Streamlit-based agricultural analytics project ins
 ## Run Locally (Windows PowerShell)
 
 ```powershell
-cd "c:\Users\nikhi\OneDrive\Desktop\MAVEN demo vs\agrismart-lite"
+cd "c:\Users\nikhi\OneDrive\Desktop\MAVEN demo vs\agrismart-pro"
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
