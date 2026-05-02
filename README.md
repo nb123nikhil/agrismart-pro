@@ -10,7 +10,6 @@ AgriSmart Pro is an original, Streamlit-based agricultural analytics project ins
 - Irrigation planner with rainfall credit
 - Profit and ROI analyzer
 - History tracking and CSV export
-- Data Blender module for combining CSV datasets
 - Disease Detection module for symptom-based demo diagnosis
 - Soil Health Analyser for soil quality scoring
 

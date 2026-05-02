@@ -125,35 +125,6 @@ def profit_estimate(crop: str, estimated_yield_t: float, area_hectare: float, ex
     }
 
 
-def blend_datasets(left_df, right_df, left_weight: float = 0.5, right_weight: float = 0.5):
-    common_cols = [column for column in left_df.columns if column in right_df.columns]
-    numeric_cols = [column for column in common_cols if np.issubdtype(left_df[column].dtype, np.number) and np.issubdtype(right_df[column].dtype, np.number)]
-
-    if not numeric_cols:
-        return left_df.copy(), {"columns": [], "rows": int(len(left_df))}
-
-    blend_rows = []
-    left_total = max(left_weight + right_weight, 1e-9)
-    left_factor = left_weight / left_total
-    right_factor = right_weight / left_total
-
-    for column in numeric_cols:
-        blended_series = (left_df[column].fillna(0).astype(float) * left_factor) + (right_df[column].fillna(0).astype(float) * right_factor)
-        blend_rows.append((column, round(float(blended_series.mean()), 3)))
-
-    summary = {
-        "columns": numeric_cols,
-        "rows": int(min(len(left_df), len(right_df))),
-        "blended_means": dict(blend_rows),
-    }
-
-    blended = left_df.copy()
-    for column in numeric_cols:
-        blended[column] = (left_df[column].fillna(0).astype(float) * left_factor) + (right_df[column].fillna(0).astype(float) * right_factor)
-
-    return blended, summary
-
-
 def disease_assessment(symptoms: Dict[str, float]) -> Dict[str, float | str | list]:
     yellowing = float(symptoms.get("yellowing", 0))
     spots = float(symptoms.get("spots", 0))

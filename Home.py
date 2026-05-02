@@ -105,17 +105,6 @@ with d1:
     st.markdown(
         """
         <div class="card">
-            <h3>Data Blender</h3>
-            <p>Combine two CSV files into one blended dataset for analysis and reporting.</p>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-with d2:
-    st.markdown(
-        """
-        <div class="card">
             <h3>Disease Detection</h3>
             <p>Review uploaded leaf images and symptom scores to estimate likely crop disease.</p>
         </div>
@@ -123,7 +112,7 @@ with d2:
         unsafe_allow_html=True,
     )
 
-with d3:
+with d2:
     st.markdown(
         """
         <div class="card">
